@@ -1,11 +1,19 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectItem, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel } from "@/components/ui/select";
+import {
+  Select,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectGroup,
+  SelectLabel,
+} from "@/components/ui/select";
 import translate from "translate";
 
 translate.engine = "deepl";
-translate.key = "10b9c600-d37a-4eca-8413-c30f085525c1:fx";
+translate.key = import.meta.env.VITE_GL_API_KEY;
 
 const languages = [
   { code: "es", name: "Spanish" },
@@ -48,14 +56,18 @@ function Translate() {
             className='border-purple-700 focus:ring-purple-700'
           />
           <Select>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select a language" />
+            <SelectTrigger className='w-[180px]'>
+              <SelectValue placeholder='Select a language' />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Languages</SelectLabel>
                 {languages.map((language) => (
-                  <SelectItem onClick={()=>setTargetLanguage(language.code)} key={language.code} value={language.code}>
+                  <SelectItem
+                    onClick={() => setTargetLanguage(language.code)}
+                    key={language.code}
+                    value={language.code}
+                  >
                     {language.name}
                   </SelectItem>
                 ))}
