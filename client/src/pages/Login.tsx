@@ -10,13 +10,13 @@ function Login() {
   const [password, setPassword] = useState("password123");
   const navigate = useNavigate();
 
-  const handleSubmit = (e:FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const dummyEmail = "user@example.com";
     const dummyPassword = "password123";
 
     if (email === dummyEmail && password === dummyPassword) {
-      navigate("/");
+      navigate("/home");
     } else {
       alert("Invalid email or password");
     }
@@ -38,20 +38,27 @@ function Login() {
         <div className='flex my-4 justify-center space-x-4'>
           <button
             type='button'
-            className={`text-lg font-medium ${isLogin ? 'text-blue-600 underline' : 'text-gray-400'}`}
+            className={`text-lg font-medium ${
+              isLogin ? "text-blue-600 underline" : "text-gray-400"
+            }`}
             onClick={() => setIsLogin(true)}
           >
             Login
           </button>
           <button
             type='button'
-            className={`text-lg font-medium ${!isLogin ? 'text-blue-600 underline' : 'text-gray-400'}`}
+            className={`text-lg font-medium ${
+              !isLogin ? "text-blue-600 underline" : "text-gray-400"
+            }`}
             onClick={() => setIsLogin(false)}
           >
             Register
           </button>
         </div>
-        <form className='mt-8 w-full flex flex-col gap-4' onSubmit={handleSubmit}>
+        <form
+          className='mt-8 w-full flex flex-col gap-4'
+          onSubmit={handleSubmit}
+        >
           <div className='rounded-md shadow-sm space-y-4'>
             <div>
               <label htmlFor='email-address' className='sr-only'>

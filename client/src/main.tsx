@@ -1,6 +1,5 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
 import "./index.css";
 import { ThemeProvider } from "./components/theme-provider.tsx";
 import {
@@ -12,11 +11,16 @@ import Login from "./pages/Login.tsx";
 import FaqPage from "./pages/FaqPage.tsx";
 import About from "./pages/About.tsx";
 import Translate from "./pages/Translate.tsx";
+import Home from "./pages/Home.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Login />,
+  },
+  {
+    path: "/home",
+    element: <Home />,
   },
   {
     path: "/chat",

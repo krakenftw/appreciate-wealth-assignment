@@ -5,7 +5,7 @@ import {
   ArrowRightIcon,
   SunIcon,
 } from "@radix-ui/react-icons";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 import {
   ChatBubbleBottomCenterTextIcon,
@@ -18,6 +18,12 @@ type Message = {
   sender: "user" | "bot";
   content: string;
   time: string;
+};
+
+type Fruit = {
+  id: number;
+  name: string;
+  image: string;
 };
 
 const initialMessages: Message[] = [
@@ -38,12 +44,26 @@ const initialMessages: Message[] = [
   },
 ];
 
+const serverUrl = import.meta.env.VITE_SERVER_URL;
+
 function Chat() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { theme, setTheme } = useTheme();
   const [messages, setMessages] =
     useState<Message[]>(initialMessages);
   const [inputValue, setInputValue] = useState("");
+  const [fruits, setFruits] = useState<Fruit[]>([]);
+
+  useEffect(() => {
+    fetch(`${serverUrl}/fruits`)
+      .then(async (res) => {
+        const data = await res.json();
+        setFruits(data);
+      })
+      .catch((error) =>
+        console.error("Error fetching fruits:", error)
+      );
+  }, []);
 
   const handleSubmit = () => {
     if (inputValue.trim() !== "") {
@@ -135,6 +155,23 @@ function Chat() {
                   </div>
                   <div className='text-gray-500 text-sm mt-1 dark:text-gray-400'>
                     {message.time}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className='p-4 flex gap-4 overflow-x-auto'>
+              {fruits.map((fruit) => (
+                <div
+                  key={fruit.id}
+                  className='flex-shrink-0 w-32 h-32 rounded-lg shadow-md p-4 flex flex-col items-center justify-center'
+                >
+                  <img
+                    src={fruit.image}
+                    alt={fruit.name}
+                    className='w-16 h-16 rounded-full mb-2'
+                  />
+                  <div className='text-center text-sm font-semibold'>
+                    {fruit.name}
                   </div>
                 </div>
               ))}
