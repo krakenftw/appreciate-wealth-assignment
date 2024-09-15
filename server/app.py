@@ -3,6 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS, cross_origin
 from werkzeug.exceptions import HTTPException
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -17,7 +21,7 @@ class Faq(db.Model):
     question = db.Column(db.String())
     answer = db.Column(db.String())
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://rand:Vectorpg123@127.0.0.1:5432/crud'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
