@@ -47,6 +47,8 @@ function FaqPage() {
     fruit_id: 0,
   });
   const [editFaq, setEditFaq] = useState<Faq | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ question?: string; answer?: string }>({});
 
   useEffect(() => {
     fetch(`${serverUrl}/faqs`)
@@ -67,7 +69,18 @@ function FaqPage() {
       );
   }, []);
 
+  const validateForm = (faq: Faq) => {
+    const newErrors: { question?: string; answer?: string } = {};
+    if (!faq.question) newErrors.question = "Question is required";
+    if (!faq.answer) newErrors.answer = "Answer is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleAddFaq = () => {
+    if (!validateForm(newFaq)) return;
+
+    setLoading(true);
     fetch(`${serverUrl}/faqs`, {
       method: "POST",
       headers: {
@@ -81,12 +94,14 @@ function FaqPage() {
         setNewFaq({ id: 0, question: "", answer: "", fruit_id: 0 });
         setIsDialogOpen(false);
       })
-      .catch((error) => console.error("Error adding faq:", error));
+      .catch((error) => console.error("Error adding faq:", error))
+      .finally(() => setLoading(false));
   };
 
   const handleEditFaq = () => {
-    if (!editFaq) return;
+    if (!editFaq || !validateForm(editFaq)) return;
 
+    setLoading(true);
     fetch(`${serverUrl}/faqs/${editFaq.id}`, {
       method: "PUT",
       headers: {
@@ -100,17 +115,20 @@ function FaqPage() {
         setEditFaq(null);
         setIsEditDialogOpen(false);
       })
-      .catch((error) => console.error("Error editing faq:", error));
+      .catch((error) => console.error("Error editing faq:", error))
+      .finally(() => setLoading(false));
   };
 
   const handleDeleteFaq = (id: number) => {
+    setLoading(true);
     fetch(`${serverUrl}/faqs/${id}`, {
       method: "DELETE",
     })
       .then(() => {
         setFaqs(faqs.filter((faq) => faq.id !== id));
       })
-      .catch((error) => console.error("Error deleting faq:", error));
+      .catch((error) => console.error("Error deleting faq:", error))
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -148,6 +166,7 @@ function FaqPage() {
                   <Button
                     className='mt-4 bg-red-700 text-white hover:bg-red-800'
                     onClick={() => handleDeleteFaq(faq.id)}
+                    disabled={loading}
                   >
                     Delete FAQ
                   </Button>
@@ -157,6 +176,7 @@ function FaqPage() {
                       setEditFaq(faq);
                       setIsEditDialogOpen(true);
                     }}
+                    disabled={loading}
                   >
                     Edit FAQ
                   </Button>
@@ -168,6 +188,7 @@ function FaqPage() {
         <Button
           className='mt-8 bg-purple-700 text-white hover:bg-purple-800'
           onClick={() => setIsDialogOpen(true)}
+          disabled={loading}
         >
           Add New FAQ
         </Button>
@@ -187,6 +208,7 @@ function FaqPage() {
                 }
                 className='border-purple-700 focus:ring-purple-700'
               />
+              {errors.question && <p className='text-red-500'>{errors.question}</p>}
               <Textarea
                 placeholder='Answer'
                 value={newFaq.answer}
@@ -195,6 +217,7 @@ function FaqPage() {
                 }
                 className='border-purple-700 focus:ring-purple-700'
               />
+              {errors.answer && <p className='text-red-500'>{errors.answer}</p>}
               <Select
                 onValueChange={(value) =>
                   setNewFaq({ ...newFaq, fruit_id: parseInt(value) })
@@ -222,8 +245,9 @@ function FaqPage() {
               <Button
                 className='bg-purple-700 text-white hover:bg-purple-800'
                 onClick={handleAddFaq}
+                disabled={loading}
               >
-                Add FAQ
+                {loading ? "Adding..." : "Add FAQ"}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -250,6 +274,7 @@ function FaqPage() {
                 }
                 className='border-purple-700 focus:ring-purple-700'
               />
+              {errors.question && <p className='text-red-500'>{errors.question}</p>}
               <Textarea
                 placeholder='Answer'
                 value={editFaq?.answer || ""}
@@ -261,6 +286,7 @@ function FaqPage() {
                 }
                 className='border-purple-700 focus:ring-purple-700'
               />
+              {errors.answer && <p className='text-red-500'>{errors.answer}</p>}
               <Select
                 onValueChange={(value) =>
                   setEditFaq({
@@ -291,8 +317,9 @@ function FaqPage() {
               <Button
                 className='bg-purple-700 text-white hover:bg-purple-800'
                 onClick={handleEditFaq}
+                disabled={loading}
               >
-                Save Changes
+                {loading ? "Saving..." : "Save Changes"}
               </Button>
             </DialogFooter>
           </DialogContent>
