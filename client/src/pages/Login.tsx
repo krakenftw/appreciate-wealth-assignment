@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -10,7 +10,7 @@ function Login() {
   const [password, setPassword] = useState("password123");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e:FormEvent) => {
     e.preventDefault();
     const dummyEmail = "user@example.com";
     const dummyPassword = "password123";

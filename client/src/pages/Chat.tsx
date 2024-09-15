@@ -8,7 +8,6 @@ import {
 import { useRef, useState } from "react";
 
 import {
-  Bars3Icon,
   ChatBubbleBottomCenterTextIcon,
   MicrophoneIcon,
   PaperClipIcon,
